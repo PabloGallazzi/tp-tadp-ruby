@@ -10,10 +10,17 @@
 /test/version_tmp/
 /tmp/
 
-## Specific to RubyMotion:
+## Specific to RubyMotion and RubyMine:
 .dat*
 .repl_history
 build/
+.idea/*
+.slcache
+tp-tacs.iml
+.DS_Store
+/out/
+/target/
+*.iml
 
 ## Documentation cache and generated files:
 /.yardoc/
