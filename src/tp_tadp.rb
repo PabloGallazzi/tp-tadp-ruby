@@ -70,6 +70,12 @@ class AndCombinator
   def call(val)
     one.call(val) && another.call(val)
   end
+  def and(other)
+    AndCombinator.new(self, other)
+  end
+  def or(other)
+    OrCombinator.new(self, other)
+  end
 end
 
 class OrCombinator
@@ -83,6 +89,12 @@ class OrCombinator
   def call(val)
     one.call(val) || another.call(val)
   end
+  def and(other)
+    AndCombinator.new(self, other)
+  end
+  def or(other)
+    OrCombinator.new(self, other)
+  end
 end
 
 class Pinga
@@ -92,10 +104,10 @@ class Pinga
     val(5).and(type(Fixnum)).call(5)
   end
   def a1
-    val("Hola").and(type(String)).call("Hola")
+    val("Hola").and(type(String)).and(val("Chau")).call("Hola")
   end
   def a2
-    val(5).and(type(String)).call(5)
+    val("Hola").and(type(String)).call("Hola")
   end
   def b
     type(Fixnum).call(5)
