@@ -75,26 +75,15 @@ class Pinga
   include Matcher
 
   def a
-    val(5).and(type(Fixnum)).not.call(5)
+    val(5).and(type(Fixnum)).not.call(5) # => false
   end
-
   def a1
-    val("Hola").and(type(String)).and(val("Hola")).call("Hola")
+    val("Hola").and(type(String)).and(val("Hola")).call("Hola") # => true
   end
-
   def a2
-    val("Hola").and(type(String)).call("Hola")
+    val("Hola").and(type(String)).call("Hola") # => true
   end
-
-  def b
-    type(Fixnum).call(5)
-  end
-
-  def c
-    type(Fixnum).call("hola")
-  end
-
-  def d
-    type(Fixnum).call("hola")
+  def a3
+    val("Hola").and(type(String)).or(type(Fixnum)).call("Hola") # => true
   end
 end
