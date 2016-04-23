@@ -2,31 +2,38 @@ module Matcher
   def val(value)
     ValPattern.new value
   end
+
   def type(value)
     TypePattern.new value
   end
+
   def duck(*values)
     DuckPattern.new values
   end
 end
 
-class Combinator
+module Combinator
   def and(other)
     AndCombinator.new(self, other)
   end
+
   def or(other)
     OrCombinator.new(self, other)
   end
+
   def not
     NotCombinator.new(self)
   end
 end
 
-class DuckPattern < Combinator
+class DuckPattern
+  include Combinator
   attr_accessor :val
+
   def initialize(val)
     self.val = val
   end
+
   def call(value)
     val.all? do |sym|
       value.methods.include? sym
@@ -34,7 +41,8 @@ class DuckPattern < Combinator
   end
 end
 
-class ValPattern < Combinator
+class ValPattern
+  include Combinator
   attr_accessor :val
 
   def initialize(val)
@@ -46,7 +54,8 @@ class ValPattern < Combinator
   end
 end
 
-class TypePattern < Combinator
+class TypePattern
+  include Combinator
   attr_accessor :type
 
   def initialize(type)
@@ -58,7 +67,8 @@ class TypePattern < Combinator
   end
 end
 
-class AndCombinator < Combinator
+class AndCombinator
+  include Combinator
   attr_accessor :one, :another
 
   def initialize(one, another)
@@ -71,7 +81,8 @@ class AndCombinator < Combinator
   end
 end
 
-class OrCombinator < Combinator
+class OrCombinator
+  include Combinator
   attr_accessor :one, :another
 
   def initialize(one, another)
@@ -84,7 +95,8 @@ class OrCombinator < Combinator
   end
 end
 
-class NotCombinator < Combinator
+class NotCombinator
+  include Combinator
   attr_accessor :one
 
   def initialize(one)
