@@ -14,6 +14,9 @@ class Combinator
   def or(other)
     OrCombinator.new(self, other)
   end
+  def not
+    NotCombinator.new(self)
+  end
 end
 
 class ValPattern < Combinator
@@ -58,11 +61,21 @@ class OrCombinator < Combinator
   end
 end
 
+class NotCombinator < Combinator
+  attr_accessor :one
+  def initialize(one)
+    self.one = one
+  end
+  def call(val)
+    !one.call(val)
+  end
+end
+
 class Pinga
   include Matcher
 
   def a
-    val(5).and(type(Fixnum)).call(5)
+    val(5).and(type(Fixnum)).not.call(5)
   end
 
   def a1
