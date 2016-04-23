@@ -8,11 +8,14 @@ module Matcher
   end
 end
 
+
 class Combinator
   attr_accessor :one, :another
+
   def and(one, another)
     AndCombinator.new(one, another)
   end
+
   def or (one, another)
     OrCombinator.new(one, another)
   end
@@ -26,7 +29,14 @@ class ValPattern < Combinator
   end
 
   def call(value)
-    self.val.equal? value
+    self.val.eql? value
+  end
+
+  def and(other)
+    AndCombinator.new(self, other)
+  end
+  def or(other)
+    OrCombinator.new(self, other)
   end
 end
 
@@ -40,38 +50,61 @@ class TypePattern < Combinator
   def call(type)
     type.is_a? self.type
   end
+
+  def and(other)
+    AndCombinator.new(self, other)
+  end
+  def or(other)
+    OrCombinator.new(self, other)
+  end
 end
 
 class AndCombinator
-  attr_accessor :another
+  attr_accessor :one, :another
 
-  def and(another)
+  def initialize(one, another)
+    self.one = one
     self.another = another
   end
-  def evaluate(val)
+
+  def call(val)
+    one.call(val) && another.call(val)
   end
 end
 
 class OrCombinator
-  attr_accessor :another
-  def or
+  attr_accessor :one, :another
+
+  def initialize(one, another)
+    self.one = one
     self.another = another
   end
-  def evaluate
+
+  def call(val)
+    one.call(val) || another.call(val)
   end
 end
 
 class Pinga
   include Matcher
+
   def a
-    val(5).call(5)
+    val(5).and(type(Fixnum)).call(5)
+  end
+  def a1
+    val("Hola").and(type(String)).call("Hola")
+  end
+  def a2
+    val(5).and(type(String)).call(5)
   end
   def b
     type(Fixnum).call(5)
   end
+
   def c
     type(Fixnum).call("hola")
   end
+
   def d
     type(Fixnum).call("hola")
   end
