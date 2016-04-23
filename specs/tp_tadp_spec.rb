@@ -1,8 +1,8 @@
 require_relative '../src/tp_tadp'
 require 'rspec'
 
-describe 'PaternMatchings' do
-  include Matcher
+describe 'PatternMatching' do
+  include PatternMatching
 
   class Test
     def a

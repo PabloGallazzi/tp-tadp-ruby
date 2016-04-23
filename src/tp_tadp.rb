@@ -1,4 +1,4 @@
-module Matcher
+module PatternMatching
   def val(value)
     ValPattern.new value
   end
