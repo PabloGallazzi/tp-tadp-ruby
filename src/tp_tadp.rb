@@ -1,4 +1,9 @@
 module PatternMatching
+
+  def valAlternativo(value)
+    return Proc.new {|n| n==value}
+  end
+
   def val(value)
     ValPattern.new value
   end

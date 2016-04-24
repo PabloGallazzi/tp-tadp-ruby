@@ -17,6 +17,9 @@ describe 'PatternMatching' do
     Test.new
   }
 
+  it '5 es valAlternativo(5)' do
+    expect(valAlternativo(5).call(5)).to eq(true)
+  end
   it 'un_test tiene a' do
     expect(duck(:a, :a1).call(un_test)).to eq(true)
   end
