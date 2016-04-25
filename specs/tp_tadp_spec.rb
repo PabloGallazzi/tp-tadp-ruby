@@ -17,6 +17,14 @@ describe 'PatternMatching' do
     Test.new
   }
 
+  it 'list should execute block passed' do
+    expect(with(val(5),type(Fixnum)) {puts 'hello'}.call(5)).to eq(true)
+  end
+
+  it 'list should not execute block passed' do
+    expect(with(val(5),type(String)) {puts 'hello'}.call(5)).to eq(false)
+  end
+
   it '5 es valAlternativo(5)' do
     expect(valAlternativo(5).call(5)).to eq(true)
   end

@@ -1,7 +1,7 @@
 module PatternMatching
 
   def valAlternativo(value)
-    Proc.new {|n| n==value}
+    Proc.new { |n| n==value }
   end
 
   def val(value)
@@ -19,6 +19,10 @@ module PatternMatching
   def list(*values)
     ListPattern.new(values[0], values[1])
   end
+
+  def with(*args, &block)
+    WithPattern.new(args, block)
+  end
 end
 
 module Combinator
@@ -35,25 +39,46 @@ module Combinator
   end
 end
 
+class WithPattern
+  include Combinator
+  attr_accessor :list, :proc
+
+  def initialize(list, proc)
+    self.proc = proc
+    self.list = []
+    self.list += list
+  end
+
+  def call(value)
+    bool = list.all? do |matcher|
+      matcher.call(value)
+    end
+    if bool
+      proc.call
+    end
+    bool
+  end
+end
+
 class ListPattern
   include Combinator
   attr_accessor :list, :size_bool
 
-  def initialize(list,size)
+  def initialize(list, size)
     self.list = list
     self.size_bool = size
   end
 
   def call(value)
     if self.size_bool
-      self.list.eql?value if self.list.count == value.count
+      self.list.eql? value if self.list.count == value.count
     else
       if self.list.count > value.count
         new_list = self.list.first value.count
-        value.eql?new_list
+        value.eql? new_list
       else
         new_list = value.first self.list.count
-        self.list.eql?new_list
+        self.list.eql? new_list
       end
     end
   end
@@ -141,20 +166,20 @@ class NotCombinator
   end
 end
 
-
+=begin
 module Pattern
   include PatternMatching
   attr_accessor :matches
+
   def initialize
     @matches = []
   end
+
   def with(*matcher, &block)
     @matchers.add(matcher)
-    self.call(block) unless
-        @matchers.all? do |a,b|
-          !(a.and(b))
-        end
+    self.call(block) unless @matchers.all? do |a, b|
+      !(a.and(b))
+    end
   end
 end
-
-
+=end
