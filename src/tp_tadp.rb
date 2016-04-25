@@ -1,4 +1,4 @@
-module Matcher
+module PatternMatching
 
   def valAlternativo(value)
     Proc.new {|n| n==value}
