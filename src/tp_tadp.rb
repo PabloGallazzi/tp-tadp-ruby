@@ -1,4 +1,4 @@
-module PatternMatching
+module Matcher
 
   def valAlternativo(value)
     return Proc.new {|n| n==value}
@@ -121,7 +121,7 @@ module Pattern
     @matches = []
   end
   def with(*matcher, &block)
-    @matchers += matcher
+    @matchers.add(matcher)
     self.call(block) unless
         @matchers.all? do |a,b|
           !(a.and(b))
