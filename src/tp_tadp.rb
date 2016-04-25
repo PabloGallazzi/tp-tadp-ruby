@@ -44,7 +44,6 @@ module Combinator
 end
 
 class OtherwisePattern
-  include Combinator
   attr_accessor :proc
 
   def initialize(proc)
@@ -58,7 +57,6 @@ class OtherwisePattern
 end
 
 class WithPattern
-  include Combinator
   attr_accessor :list, :proc
 
   def initialize(list, proc)
