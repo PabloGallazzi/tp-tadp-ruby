@@ -17,6 +17,10 @@ describe 'PatternMatching' do
     Test.new
   }
 
+  it 'otherwise should respond true and execute' do
+    expect(otherwise {puts 'hello'}.call(5)).to eq(true)
+  end
+
   it 'list should execute block passed' do
     expect(with(val(5),type(Fixnum)) {puts 'hello'}.call(5)).to eq(true)
   end

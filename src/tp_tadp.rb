@@ -23,6 +23,10 @@ module PatternMatching
   def with(*args, &block)
     WithPattern.new(args, block)
   end
+
+  def otherwise(&block)
+    OtherwisePattern.new(block)
+  end
 end
 
 module Combinator
@@ -36,6 +40,20 @@ module Combinator
 
   def not
     NotCombinator.new(self)
+  end
+end
+
+class OtherwisePattern
+  include Combinator
+  attr_accessor :proc
+
+  def initialize(proc)
+    self.proc = proc
+  end
+
+  def call(value)
+    proc.call
+    true
   end
 end
 
