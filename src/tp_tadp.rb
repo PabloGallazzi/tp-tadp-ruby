@@ -181,21 +181,3 @@ class NotCombinator
     !one.call(val)
   end
 end
-
-=begin
-module Pattern
-  include PatternMatching
-  attr_accessor :matches
-
-  def initialize
-    @matches = []
-  end
-
-  def with(*matcher, &block)
-    @matchers.add(matcher)
-    self.call(block) unless @matchers.all? do |a, b|
-      !(a.and(b))
-    end
-  end
-end
-=end
