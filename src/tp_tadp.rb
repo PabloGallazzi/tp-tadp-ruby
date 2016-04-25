@@ -1,7 +1,7 @@
 module Matcher
 
   def valAlternativo(value)
-    return Proc.new {|n| n==value}
+    Proc.new {|n| n==value}
   end
 
   def val(value)
@@ -14,6 +14,10 @@ module Matcher
 
   def duck(*values)
     DuckPattern.new values
+  end
+
+  def list(*values)
+    ListPattern.new(values[0], values[1])
   end
 end
 
@@ -28,6 +32,30 @@ module Combinator
 
   def not
     NotCombinator.new(self)
+  end
+end
+
+class ListPattern
+  include Combinator
+  attr_accessor :list, :size_bool
+
+  def initialize(list,size)
+    self.list = list
+    self.size_bool = size
+  end
+
+  def call(value)
+    if self.size_bool
+      self.list.eql?value if self.list.count == value.count
+    else
+      if self.list.count > value.count
+        new_list = self.list.first value.count
+        value.eql?new_list
+      else
+        new_list = value.first self.list.count
+        self.list.eql?new_list
+      end
+    end
   end
 end
 
@@ -115,7 +143,7 @@ end
 
 
 module Pattern
-  include Matcher
+  include PatternMatching
   attr_accessor :matches
   def initialize
     @matches = []
