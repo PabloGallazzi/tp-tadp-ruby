@@ -94,12 +94,12 @@ class ListPattern
 
   def initialize(list, size)
     self.list = list
-    self.size_bool = size
+    size == nil ? self.size_bool = true : self.size_bool = size
   end
 
   def call(value)
     if self.size_bool
-      self.list.eql? value if self.list.count == value.count
+      self.list.count == value.count ? (self.list.eql? value) : false
     else
       if self.list.count > value.count
         new_list = self.list.first value.count
@@ -110,6 +110,7 @@ class ListPattern
       end
     end
   end
+
 end
 
 class DuckPattern

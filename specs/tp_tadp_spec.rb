@@ -68,16 +68,47 @@ describe 'PatternMatching' do
     expect(matcher).to eq(true)
   end
 
+  it 'size requested, size ok, firsts ok, then true' do
+    expect(list([1, 2, 3], true).call([1, 2, 3])).to eq(true)
+  end
+
+  it 'size not requested, size not ok, firsts ok, then true' do
+    expect(list([1, 2, 3], false).call([1, 2])).to eq(true)
+  end
+
+  it 'size requested, size not ok, firsts ok, then false' do
+    expect(list([1, 2, 3], true).call([1, 2])).to eq(false)
+  end
+
+  it 'size requested, size not ok, firsts ok, then false' do
+    expect(list([1, 2, 3], true).call([1, 2, 3, 4])).to eq(false)
+  end
+
+  it 'size not requested, size not ok, firsts ok, then false' do
+    expect(list([1, 2, 3], false).call([1, 2, 3, 4])).to eq(true)
+  end
+
+  it 'size implicitly requested, size not ok, firsts ok, then false' do
+    expect(list([1, 2, 3]).call([1, 2])).to eq(false)
+  end
+
+  it 'size requested, size ok, firsts not ok, then false' do
+    expect(list([1, 2, 3], true).call([1, 2, 4])).to eq(false)
+  end
+
+  it 'size requested, size not ok, firsts not ok, then false' do
+    expect(list([1, 2, 3], true).call([1, 3, 4, 5])).to eq(false)
+  end
 
   it 'otherwise should respond true and execute' do
     expect(otherwise { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
   end
 
-  it 'list should execute block passed' do
+  it 'with should execute block passed' do
     expect(with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
   end
 
-  it 'list should not execute block passed' do
+  it 'with should not execute block passed' do
     expect(with(val(5), type(String)) { puts 'NO tiene que salir por acá!' }.call(5)).to eq(false)
   end
 
