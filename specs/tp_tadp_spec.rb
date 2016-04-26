@@ -20,16 +20,16 @@ describe 'PatternMatching' do
 
   it 'matcher for otherwise as in the example' do
     matcherFor = matches (5) do
-      with(val(5), type(String)) { puts 'No tiene que salir por acá!' }
-      with(val('6'), type(Fixnum)) { puts 'No tiene que salir por acá!' }
+      with(val(5), type(String)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(false)
   end
 
   it 'matcher for otherwise as in the example' do
     matcherFor1 = matches (5) do
-      with(val(5), type(String)) { puts 'No tiene que salir por acá!' }
-      with(val('6'), type(Fixnum)) { puts 'No tiene que salir por acá!' }
+      with(val(5), type(String)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
       otherwise { puts 'Tiene que salir por acá!' }
     end
     expect(matcherFor1).to eq(true)
@@ -38,8 +38,8 @@ describe 'PatternMatching' do
   it 'matcher as in the example' do
     matcherFor2 = matches (5) do
       with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }
-      with(val(5), type(Fixnum)) { puts 'No tiene que salir por acá!' }
-      otherwise { puts 'No tiene que salir por acá!' }
+      with(val(5), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      otherwise { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor2).to eq(true)
   end
@@ -50,10 +50,10 @@ describe 'PatternMatching' do
         puts 'Tiene que salir por acá!'
       end
       with(val(5), type(Fixnum)) do
-        puts 'NO tiene que salir por acá!'
+        raise 'No tiene que salir por acá!'
       end
       otherwise do
-        puts 'No tiene que salir por acá!'
+        raise 'No tiene que salir por acá!'
       end
     end
     expect(matcherFor3).to eq(true)
@@ -62,8 +62,8 @@ describe 'PatternMatching' do
   it 'matcher witch {' do
     matcher = matches (5) {
       with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }
-      with(val(5), type(Fixnum)) { puts 'No tiene que salir por acá!' }
-      otherwise { puts 'No tiene que salir por acá!' }
+      with(val(5), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      otherwise { raise 'No tiene que salir por acá!' }
     }
     expect(matcher).to eq(true)
   end
@@ -109,7 +109,7 @@ describe 'PatternMatching' do
   end
 
   it 'with should not execute block passed' do
-    expect(with(val(5), type(String)) { puts 'NO tiene que salir por acá!' }.call(5)).to eq(false)
+    expect(with(val(5), type(String)) { raise 'NO tiene que salir por acá!' }.call(5)).to eq(false)
   end
 
   it '5 es valAlternativo(5)' do
