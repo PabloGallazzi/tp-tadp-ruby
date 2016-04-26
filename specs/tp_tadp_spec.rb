@@ -8,25 +8,69 @@ describe 'PatternMatching' do
     def a
       true
     end
+
     def a1
       true
     end
   end
 
-  let(:un_test){
+  let(:un_test) {
     Test.new
   }
 
+  it 'matcher for otherwise as in the example' do
+    matcherFor1 = matches (5) do
+      with(val(5), type(String)) { puts 'No tiene que salir por acá!' }
+      with(val('6'), type(Fixnum)) { puts 'No tiene que salir por acá!' }
+      otherwise { puts 'Tiene que salir por acá!' }
+    end
+    expect(matcherFor1).to eq(true)
+  end
+
+  it 'matcher as in the example' do
+    matcherFor2 = matches (5) do
+      with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }
+      with(val(5), type(Fixnum)) { puts 'No tiene que salir por acá!' }
+      otherwise { puts 'No tiene que salir por acá!' }
+    end
+    expect(matcherFor2).to eq(true)
+  end
+
+  it 'matcher witch do' do
+    matcherFor3 = matches (5) do
+      with(val(5), type(Fixnum)) do
+        puts 'Tiene que salir por acá!'
+      end
+      with(val(5), type(Fixnum)) do
+        puts 'NO tiene que salir por acá!'
+      end
+      otherwise do
+        puts 'No tiene que salir por acá!'
+      end
+    end
+    expect(matcherFor3).to eq(true)
+  end
+
+  it 'matcher witch {' do
+    matcher = matches (5) {
+      with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }
+      with(val(5), type(Fixnum)) { puts 'No tiene que salir por acá!' }
+      otherwise { puts 'No tiene que salir por acá!' }
+    }
+    expect(matcher).to eq(true)
+  end
+
+
   it 'otherwise should respond true and execute' do
-    expect(otherwise {puts 'hello'}.call(5)).to eq(true)
+    expect(otherwise { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
   end
 
   it 'list should execute block passed' do
-    expect(with(val(5),type(Fixnum)) {puts 'hello'}.call(5)).to eq(true)
+    expect(with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
   end
 
   it 'list should not execute block passed' do
-    expect(with(val(5),type(String)) {puts 'hello'}.call(5)).to eq(false)
+    expect(with(val(5), type(String)) { puts 'NO tiene que salir por acá!' }.call(5)).to eq(false)
   end
 
   it '5 es valAlternativo(5)' do

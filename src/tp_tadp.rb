@@ -1,3 +1,4 @@
+require 'sourcify'
 module PatternMatching
 
   def valAlternativo(value)
@@ -26,6 +27,23 @@ module PatternMatching
 
   def otherwise(&block)
     OtherwisePattern.new(block)
+  end
+
+  def matches (val, &block)
+    proceses = escape_to_proc block.to_source
+    proceses.each{ |proc|
+     break if proc.call val
+    }
+    true
+  end
+
+  def escape_to_proc(value)
+    escaped = value.split("do\n")[1].split("\nend")[0].split("\n")
+    procs = []
+    escaped.each { |val|
+      procs.push eval "lambda { |val|" + val + ".call(val)}"
+    }
+    procs
   end
 end
 
