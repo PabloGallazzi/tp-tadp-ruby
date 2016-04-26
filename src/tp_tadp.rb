@@ -31,10 +31,12 @@ module PatternMatching
 
   def matches (val, &block)
     escaped = block.to_source.split("do\n")[1].split("\nend")[0].split("\n")
+    bool = false
     escaped.each { |value|
-      break if ((eval "lambda { |val|" + value + ".call(val)}").call val)
+      bool = ((eval "lambda { |val|" + value + ".call(val)}").call val)
+      break if bool
     }
-    true
+    bool
   end
 
 end

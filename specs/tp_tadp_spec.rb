@@ -19,6 +19,14 @@ describe 'PatternMatching' do
   }
 
   it 'matcher for otherwise as in the example' do
+    matcherFor = matches (5) do
+      with(val(5), type(String)) { puts 'No tiene que salir por acá!' }
+      with(val('6'), type(Fixnum)) { puts 'No tiene que salir por acá!' }
+    end
+    expect(matcherFor).to eq(false)
+  end
+
+  it 'matcher for otherwise as in the example' do
     matcherFor1 = matches (5) do
       with(val(5), type(String)) { puts 'No tiene que salir por acá!' }
       with(val('6'), type(Fixnum)) { puts 'No tiene que salir por acá!' }
