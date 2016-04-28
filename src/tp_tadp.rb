@@ -99,18 +99,30 @@ class ListPattern
 
   def call(value)
     if self.size_bool
-      self.list.count == value.count ? (self.list.eql? value) : false
+      self.list.count == value.count ? compare(self.list, value) : false
     else
       if self.list.count > value.count
         new_list = self.list.first value.count
-        value.eql? new_list
+        compare(new_list, value)
       else
         new_list = value.first self.list.count
-        self.list.eql? new_list
+        compare(self.list, new_list)
       end
     end
   end
 
+  def compare(val1, val2)
+    comparison = false
+    val1.each_with_index { |val, index|
+      value = val2[index]
+      if val.methods.include? :call
+        comparison = val.call(value)
+      else
+        comparison = val.equal? value
+      end
+    }
+    comparison
+  end
 end
 
 class DuckPattern

@@ -72,6 +72,10 @@ describe 'PatternMatching' do
     expect(matcher).to eq(true)
   end
 
+  it 'with symbols, val and or size requested, size ok, firsts ok, then true' do
+    expect(list([:a, val(2), type(Fixnum).and(val(3))], true).call([1, 2, 3])).to eq(true)
+  end
+
   it 'size requested, size ok, firsts ok, then true' do
     expect(list([1, 2, 3], true).call([1, 2, 3])).to eq(true)
   end
