@@ -109,7 +109,7 @@ describe 'PatternMatching' do
   end
 
   it 'with should execute block passed' do
-    expect(with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
+    expect(with(val(5).and(:a), type(Fixnum)) { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
   end
 
   it 'with should not execute block passed' do

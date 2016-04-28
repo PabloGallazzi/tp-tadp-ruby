@@ -1,10 +1,6 @@
 require 'sourcify'
 module PatternMatching
 
-  def valAlternativo(value)
-    Proc.new { |n| n==value }
-  end
-
   def val(value)
     ValPattern.new value
   end
@@ -37,6 +33,10 @@ module PatternMatching
       break if bool
     }
     bool
+  end
+
+  def valAlternativo(value)
+    Proc.new { |n| n==value }
   end
 
 end
