@@ -29,7 +29,7 @@ module PatternMatching
     escaped = block.to_source.split("do\n")[1].split("\nend")[0].split("\n")
     bool = false
     escaped.each { |value|
-      bool = ((eval "lambda { |val|" + value + ".call(val)}").call val)
+      bool = ((eval 'lambda { |val|' + value + '.call(val)}').call val)
       break if bool
     }
     bool
