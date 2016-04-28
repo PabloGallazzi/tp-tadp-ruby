@@ -194,3 +194,9 @@ class NotCombinator
     !one.call(val)
   end
 end
+
+class Symbol
+  def call(val)
+    true
+  end
+end

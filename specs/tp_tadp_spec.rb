@@ -18,6 +18,10 @@ describe 'PatternMatching' do
     Test.new
   }
 
+  it 'call to a symbol returns true' do
+    expect(:un_symbol.call 5).to eq(true)
+  end
+
   it 'matcher for otherwise as in the example' do
     matcherFor = matches (5) do
       with(val(5), type(String)) { raise 'No tiene que salir por acá!' }
