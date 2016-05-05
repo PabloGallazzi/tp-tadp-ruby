@@ -1,4 +1,3 @@
-require 'sourcify'
 module PatternMatching
 
   def val(value)
