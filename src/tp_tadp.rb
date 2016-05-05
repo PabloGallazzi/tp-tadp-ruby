@@ -20,13 +20,13 @@ module PatternMatching
   def with(*args, &block)
     map = {}
     bool = args.all? do |matcher|
+      matcher.bind(valor, map)
       matcher.call(valor)
-      matcher.bind(map)
     end
     if bool
-      block.call
-      raise TodoEstaBienError
+      Executor.new(map,block).execute
     end
+    bool
   end
 
   def otherwise(&block)
@@ -35,12 +35,12 @@ module PatternMatching
   end
 
   def matches (val, &block)
-    MatchesStuff.new(val, block).execute
+    Matches.new(val, block).execute
   end
 
 end
 
-class MatchesStuff
+class Matches
   include PatternMatching
   attr_accessor :proc, :valor
 
@@ -87,23 +87,18 @@ class OtherwisePattern
   end
 end
 
-class WithPattern
+class Executor
   attr_accessor :list, :proc
 
   def initialize(list, proc)
     self.proc = proc
-    self.list = []
-    self.list += list
+    self.list = list
   end
 
-  def call(value)
-    bool = list.all? do |matcher|
-      matcher.call(value)
-    end
-    if bool
-      proc.call
-    end
-    bool
+  def execute()
+    list.each{|key,value|define_singleton_method(key.to_sym) {value}}
+    instance_eval &proc
+    raise TodoEstaBienError
   end
 end
 
@@ -130,8 +125,8 @@ class ListPattern
     end
   end
 
-  def bind(val)
-    val
+  def bind(val, map)
+    map
   end
 
   def compare(val1, val2)
@@ -161,8 +156,9 @@ class DuckPattern
       value.methods.include? sym
     end
   end
-  def bind(val)
-    val
+
+  def bind(val, map)
+    map
   end
 end
 
@@ -177,8 +173,9 @@ class ValPattern
   def call(value)
     self.val.eql? value
   end
-  def bind(val)
-    val
+
+  def bind(val, map)
+    map
   end
 end
 
@@ -194,8 +191,8 @@ class TypePattern
     type.is_a? self.type
   end
 
-  def bind(val)
-    val
+  def bind(val, map)
+    map
   end
 end
 
@@ -212,9 +209,10 @@ class AndCombinator
     one.call(val) && another.call(val)
   end
 
-  def bind(val)
-    one.bind(val)
-    another.bind(val)
+  def bind(val, map)
+    one.bind(val, map)
+    another.bind(val, map)
+    map
   end
 end
 
@@ -231,9 +229,10 @@ class OrCombinator
     one.call(val) || another.call(val)
   end
 
-  def bind(val)
-    one.bind(val)
-    another.bind(val)
+  def bind(val, map)
+    one.bind(map)
+    another.bind(map)
+    map
   end
 end
 
@@ -249,8 +248,9 @@ class NotCombinator
     !one.call(val)
   end
 
-  def bind(val)
-    one.bind(val)
+  def bind(val, map)
+    one.bind(val, map)
+    map
   end
 end
 
@@ -258,8 +258,10 @@ class Symbol
   def call(val)
     true
   end
-  def bind(val)
-    val
+
+  def bind(val, map)
+    map[self] = val
+    map
   end
 end
 
