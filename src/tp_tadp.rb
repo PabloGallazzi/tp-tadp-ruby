@@ -32,12 +32,12 @@ module PatternMatching
   end
 
   def matches (val, &block)
-    MatchesStuff.new(val, block).execute
+    Matches.new(val, block).execute
   end
 
 end
 
-class MatchesStuff
+class Matches
   include PatternMatching
   attr_accessor :proc, :valor
 
