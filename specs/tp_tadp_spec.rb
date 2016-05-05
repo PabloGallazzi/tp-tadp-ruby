@@ -108,21 +108,6 @@ describe 'PatternMatching' do
     expect(list([1, 2, 3], true).call([1, 3, 4, 5])).to eq(false)
   end
 
-  it 'otherwise should respond true and execute' do
-    expect(otherwise { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
-  end
-
-  it 'with should execute block passed' do
-    expect(with(val(5).and(:a), type(Fixnum)) { puts 'Tiene que salir por acá!' }.call(5)).to eq(true)
-  end
-
-  it 'with should not execute block passed' do
-    expect(with(val(5), type(String)) { raise 'NO tiene que salir por acá!' }.call(5)).to eq(false)
-  end
-
-  it '5 es valAlternativo(5)' do
-    expect(valAlternativo(5).call(5)).to eq(true)
-  end
   it 'un_test tiene a' do
     expect(duck(:a, :a1).call(un_test)).to eq(true)
   end

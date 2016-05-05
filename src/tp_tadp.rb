@@ -18,28 +18,45 @@ module PatternMatching
   end
 
   def with(*args, &block)
-    WithPattern.new(args, block)
+    bool = args.all? do |matcher|
+      matcher.call(valor)
+    end
+    if bool
+      block.call
+      raise TodoEstaBienError
+    end
   end
 
   def otherwise(&block)
-    OtherwisePattern.new(block)
+    block.call
+    raise TodoEstaBienError
   end
 
   def matches (val, &block)
-    escaped = block.to_source.split("do\n")[1].split("\nend")[0].split("\n")
-    bool = false
-    escaped.each { |value|
-      bool = ((eval 'lambda { |val|' + value + '.call(val)}').call val)
-      break if bool
-    }
-    bool
-  end
-
-  def valAlternativo(value)
-    Proc.new { |n| n==value }
+    MatchesStuff.new(val, block).execute
   end
 
 end
+
+class MatchesStuff
+  include PatternMatching
+  attr_accessor :proc, :valor
+
+  def initialize(val, proc)
+    self.valor=val
+    self.proc = proc
+  end
+
+  def execute
+    begin
+      self.instance_eval &proc
+    rescue TodoEstaBienError
+      return true
+    end
+    false
+  end
+end
+
 
 module Combinator
   def and(other)
@@ -62,7 +79,7 @@ class OtherwisePattern
     self.proc = proc
   end
 
-  def call(value)
+  def call
     proc.call
     true
   end
@@ -211,4 +228,7 @@ class Symbol
   def call(val)
     true
   end
+end
+
+class TodoEstaBienError < StandardError
 end
