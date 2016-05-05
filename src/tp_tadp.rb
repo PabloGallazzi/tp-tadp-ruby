@@ -18,8 +18,10 @@ module PatternMatching
   end
 
   def with(*args, &block)
+    map = {}
     bool = args.all? do |matcher|
       matcher.call(valor)
+      matcher.bind(map)
     end
     if bool
       block.call
@@ -128,6 +130,10 @@ class ListPattern
     end
   end
 
+  def bind(val)
+    val
+  end
+
   def compare(val1, val2)
     comparison = false
     val1.each_with_index { |val, index|
@@ -155,6 +161,9 @@ class DuckPattern
       value.methods.include? sym
     end
   end
+  def bind(val)
+    val
+  end
 end
 
 class ValPattern
@@ -168,6 +177,9 @@ class ValPattern
   def call(value)
     self.val.eql? value
   end
+  def bind(val)
+    val
+  end
 end
 
 class TypePattern
@@ -180,6 +192,10 @@ class TypePattern
 
   def call(type)
     type.is_a? self.type
+  end
+
+  def bind(val)
+    val
   end
 end
 
@@ -195,6 +211,11 @@ class AndCombinator
   def call(val)
     one.call(val) && another.call(val)
   end
+
+  def bind(val)
+    one.bind(val)
+    another.bind(val)
+  end
 end
 
 class OrCombinator
@@ -209,6 +230,11 @@ class OrCombinator
   def call(val)
     one.call(val) || another.call(val)
   end
+
+  def bind(val)
+    one.bind(val)
+    another.bind(val)
+  end
 end
 
 class NotCombinator
@@ -222,11 +248,18 @@ class NotCombinator
   def call(val)
     !one.call(val)
   end
+
+  def bind(val)
+    one.bind(val)
+  end
 end
 
 class Symbol
   def call(val)
     true
+  end
+  def bind(val)
+    val
   end
 end
 
