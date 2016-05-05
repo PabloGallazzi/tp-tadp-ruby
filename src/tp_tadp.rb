@@ -58,7 +58,6 @@ class Matches
   end
 end
 
-
 module Combinator
   def and(other)
     AndCombinator.new(self, other)
@@ -70,19 +69,6 @@ module Combinator
 
   def not
     NotCombinator.new(self)
-  end
-end
-
-class OtherwisePattern
-  attr_accessor :proc
-
-  def initialize(proc)
-    self.proc = proc
-  end
-
-  def call
-    proc.call
-    true
   end
 end
 
