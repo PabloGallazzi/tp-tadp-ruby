@@ -140,7 +140,7 @@ class ListPattern
       if val.respond_to? :call
         comparison = val.call(value)
       else
-        comparison = val.eql value
+        comparison = val.eql? value
       end
     }
     comparison
