@@ -17,13 +17,13 @@ module PatternMatching
   end
 
   def with(*values, &block)
-    map = {}
+    binder_map = {}
     bool = values.all? do |matcher|
-      matcher.bind(valor, map)
+      matcher.bind(valor, binder_map)
       matcher.call(valor)
     end
     if bool
-      Executor.new(map, block).execute
+      Executor.new(binder_map, block).execute
     end
     bool
   end
@@ -110,8 +110,7 @@ class ListPattern
     end
   end
 
-  def bind(val, map)
-    map
+  def bind(val, binder_map)
   end
 
   def compare(val1, val2)
@@ -142,8 +141,7 @@ class DuckPattern
     end
   end
 
-  def bind(val, map)
-    map
+  def bind(val, binder_mapmap)
   end
 end
 
@@ -159,8 +157,7 @@ class ValPattern
     self.val.eql? value
   end
 
-  def bind(val, map)
-    map
+  def bind(val, binder_map)
   end
 end
 
@@ -176,8 +173,7 @@ class TypePattern
     type.is_a? self.type
   end
 
-  def bind(val, map)
-    map
+  def bind(val, binder_map)
   end
 end
 
@@ -194,10 +190,9 @@ class AndCombinator
     one.call(val) && another.call(val)
   end
 
-  def bind(val, map)
-    one.bind(val, map)
-    another.bind(val, map)
-    map
+  def bind(val, binder_map)
+    one.bind(val, binder_map)
+    another.bind(val, binder_map)
   end
 end
 
@@ -214,10 +209,9 @@ class OrCombinator
     one.call(val) || another.call(val)
   end
 
-  def bind(val, map)
-    one.bind(map)
-    another.bind(map)
-    map
+  def bind(val, binder_map)
+    one.bind(binder_map)
+    another.bind(binder_map)
   end
 end
 
@@ -233,9 +227,8 @@ class NotCombinator
     !one.call(val)
   end
 
-  def bind(val, map)
-    one.bind(val, map)
-    map
+  def bind(val, binder_map)
+    one.bind(val, binder_map)
   end
 end
 
@@ -244,9 +237,8 @@ class Symbol
     true
   end
 
-  def bind(val, map)
-    map[self] = val
-    map
+  def bind(val, binder_map)
+    binder_map[self] = val
   end
 end
 
