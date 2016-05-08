@@ -19,8 +19,7 @@ module PatternMatching
   def with(*values, &block)
     binder_map = {}
     bool = values.all? do |matcher|
-      matcher.bind(valor, binder_map)
-      matcher.call(valor)
+      matcher.bind_and_call(valor, binder_map)
     end
     if bool
       Executor.new(binder_map, block).execute
@@ -38,6 +37,19 @@ module PatternMatching
   end
 
 end
+
+class Symbol
+  def call(val)
+    true
+  end
+
+  def bind_and_call(val, binder_map)
+    binder_map[self] = val
+    call(val)
+  end
+end
+
+private
 
 class Matches
   include PatternMatching
@@ -81,7 +93,7 @@ class Executor
   end
 
   def execute()
-    list.each { |key, value| define_singleton_method(key.to_sym) { value } }
+    list.each { |key, value| define_singleton_method(key) { value } }
     instance_eval &proc
     raise TodoEstaBienError
   end
@@ -110,7 +122,8 @@ class ListPattern
     end
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(value, binder_map)
+      call(value)
   end
 
   def compare(val1, val2)
@@ -141,7 +154,8 @@ class DuckPattern
     end
   end
 
-  def bind(val, binder_mapmap)
+  def bind_and_call(val, binder_mapmap)
+    call(val)
   end
 end
 
@@ -157,7 +171,8 @@ class ValPattern
     self.val.eql? value
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(value, binder_map)
+    call(value)
   end
 end
 
@@ -173,7 +188,8 @@ class TypePattern
     type.is_a? self.type
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(type, binder_map)
+    call(type)
   end
 end
 
@@ -190,9 +206,10 @@ class AndCombinator
     one.call(val) && another.call(val)
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     one.bind(val, binder_map)
     another.bind(val, binder_map)
+    call(val)
   end
 end
 
@@ -209,9 +226,10 @@ class OrCombinator
     one.call(val) || another.call(val)
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     one.bind(binder_map)
     another.bind(binder_map)
+    call(val)
   end
 end
 
@@ -227,21 +245,11 @@ class NotCombinator
     !one.call(val)
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     one.bind(val, binder_map)
+    call(val)
   end
 end
 
-class Symbol
-  def call(val)
-    true
-  end
-
-  def bind(val, binder_map)
-    binder_map[self] = val
-  end
-end
-
-private
 class TodoEstaBienError < StandardError
 end
