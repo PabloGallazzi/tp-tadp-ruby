@@ -22,6 +22,26 @@ describe 'PatternMatching' do
     expect(:un_symbol.call 5).to eq(true)
   end
 
+  it 'matcher with binding only to the left b does not bind' do
+    matcherFor = matches ('Hola! yo me tengo que imprimir...') do
+      with(val('Hola! yo me tengo que imprimir...'), type(String).and(val('Hola! yo me tengo que imprimir...')).or(type(Fixnum).and(:b)), :a) {
+        final_string = ''
+        begin
+          b
+        rescue NameError
+          final_string = a + ' Todo OK'
+        end
+        if !final_string.eql? 'Hola! yo me tengo que imprimir... Todo OK'
+          raise 'b no debería estar bindeada!'
+        end
+        puts final_string
+      }
+      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      otherwise { raise 'No tiene que salir por acá!' }
+    end
+    expect(matcherFor).to eq(true)
+  end
+
   it 'matcher with binding' do
     matcherFor = matches ('Hola! yo me tengo que imprimir...') do
       with(val('Hola! yo me tengo que imprimir...'), type(String), :a) { puts a }

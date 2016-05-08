@@ -43,8 +43,12 @@ class Symbol
     true
   end
 
-  def bind_and_call(val, binder_map)
+  def bind(val, binder_map)
     binder_map[self] = val
+  end
+
+  def bind_and_call(val, binder_map)
+    bind(val, binder_map)
     call(val)
   end
 end
@@ -123,7 +127,11 @@ class ListPattern
   end
 
   def bind_and_call(value, binder_map)
-      call(value)
+    bind(value, binder_map)
+    call(value)
+  end
+
+  def bind(val, binder_map)
   end
 
   def compare(val1, val2)
@@ -154,7 +162,11 @@ class DuckPattern
     end
   end
 
+  def bind(val, binder_map)
+  end
+
   def bind_and_call(val, binder_mapmap)
+    bind(val, binder_map)
     call(val)
   end
 end
@@ -171,7 +183,11 @@ class ValPattern
     self.val.eql? value
   end
 
+  def bind(value, binder_map)
+  end
+
   def bind_and_call(value, binder_map)
+    bind(value, binder_map)
     call(value)
   end
 end
@@ -188,7 +204,11 @@ class TypePattern
     type.is_a? self.type
   end
 
+  def bind(type, binder_map)
+  end
+
   def bind_and_call(type, binder_map)
+    bind(type, binder_map)
     call(type)
   end
 end
@@ -206,9 +226,16 @@ class AndCombinator
     one.call(val) && another.call(val)
   end
 
+  def bind(val, binder_map)
+    call = call(val)
+    if (call)
+      one.bind(val, binder_map)
+      another.bind(val, binder_map)
+    end
+  end
+
   def bind_and_call(val, binder_map)
-    one.bind(val, binder_map)
-    another.bind(val, binder_map)
+    bind(val, binder_map)
     call(val)
   end
 end
@@ -226,9 +253,22 @@ class OrCombinator
     one.call(val) || another.call(val)
   end
 
+  def bind(val, binder_map)
+    call_one = one.call(val)
+    if (call_one)
+      one.bind(val, binder_map)
+      return call_one
+    end
+    call_another = one.call(val)
+    if (call_another)
+      one.bind(val, binder_map)
+      return call_another
+    end
+    false
+  end
+
   def bind_and_call(val, binder_map)
-    one.bind(binder_map)
-    another.bind(binder_map)
+    bind(val, binder_map)
     call(val)
   end
 end
@@ -245,8 +285,12 @@ class NotCombinator
     !one.call(val)
   end
 
-  def bind_and_call(val, binder_map)
+  def bind(val, binder_map)
     one.bind(val, binder_map)
+  end
+
+  def bind_and_call(val, binder_map)
+    bind(val, binder_map)
     call(val)
   end
 end
