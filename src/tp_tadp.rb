@@ -16,14 +16,14 @@ module PatternMatching
     ListPattern.new(values[0], values[1])
   end
 
-  def with(*args, &block)
+  def with(*values, &block)
     map = {}
-    bool = args.all? do |matcher|
+    bool = values.all? do |matcher|
       matcher.bind(valor, map)
       matcher.call(valor)
     end
     if bool
-      Executor.new(map,block).execute
+      Executor.new(map, block).execute
     end
     bool
   end
@@ -81,7 +81,7 @@ class Executor
   end
 
   def execute()
-    list.each{|key,value|define_singleton_method(key.to_sym) {value}}
+    list.each { |key, value| define_singleton_method(key.to_sym) { value } }
     instance_eval &proc
     raise TodoEstaBienError
   end
@@ -118,7 +118,7 @@ class ListPattern
     comparison = false
     val1.each_with_index { |val, index|
       value = val2[index]
-      if val.methods.include? :call
+      if val.respond_to? :call
         comparison = val.call(value)
       else
         comparison = val.equal? value
@@ -250,5 +250,6 @@ class Symbol
   end
 end
 
+private
 class TodoEstaBienError < StandardError
 end

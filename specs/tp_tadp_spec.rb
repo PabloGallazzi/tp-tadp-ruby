@@ -26,7 +26,7 @@ describe 'PatternMatching' do
     matcherFor = matches ('Hola! yo me tengo que imprimir...') do
       with(val('Hola! yo me tengo que imprimir...'), type(String), :a) { puts a }
       with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
-      otherwise { puts 'No tiene que salir por acá!' }
+      otherwise { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(true)
   end
