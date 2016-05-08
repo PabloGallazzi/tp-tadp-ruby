@@ -38,6 +38,8 @@ module PatternMatching
 
 end
 
+private
+
 module Binder
   def bind(val, binder_map)
   end
@@ -58,8 +60,6 @@ class Symbol
     binder_map[self] = val
   end
 end
-
-private
 
 class Matches
   include PatternMatching
