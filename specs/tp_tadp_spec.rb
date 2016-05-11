@@ -215,7 +215,7 @@ describe 'PatternMatching' do
 
   it 'matcher with binding only to the left b does not bind' do
     matcherFor = matches ('Hola! yo me tengo que imprimir...') do
-      with(val('Hola! yo me tengo que imprimir...'), type(String).and(val('Hola! yo me tengo que imprimir...')).or(type(Fixnum).and(:b)), :a) {
+      with(val('Hola! yo me tengo que imprimir...'), type(String).and(val('Hola! yo me tengo que imprimir...')).or(type(Fixnum).and(:b)).and(type(String)), :a) {
         final_string = ''
         begin
           b
