@@ -52,6 +52,7 @@ end
 
 class Symbol
   include Binder
+
   def call(val)
     true
   end
@@ -144,6 +145,15 @@ class ListPattern
       end
     }
     comparison
+  end
+
+  def bind(val, binder_map)
+    call = call(val)
+    if (call)
+      self.list.each { |it|
+        it.bind(val, binder_map)
+      }
+    end
   end
 end
 

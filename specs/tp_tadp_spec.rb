@@ -204,6 +204,15 @@ describe 'PatternMatching' do
 
   #Tests para binding
 
+  it 'matcher with binding list' do
+    matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
+      with(list([:a],false)) { puts a }
+      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      otherwise { raise 'No tiene que salir por acá!' }
+    end
+    expect(matcherFor).to eq(true)
+  end
+
   it 'matcher with binding' do
     matcherFor = matches ('Hola! yo me tengo que imprimir...') do
       with(val('Hola! yo me tengo que imprimir...'), type(String), :a) { puts a }
