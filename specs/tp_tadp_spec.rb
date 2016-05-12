@@ -36,6 +36,10 @@ describe 'PatternMatching' do
     expect(type(Fixnum).call(5)).to eq(true)
   end
 
+  it '5 returns true for class Numeric' do
+    expect(type(Numeric).call(5)).to eq(true)
+  end
+
   #Tests para list
 
   it 'with symbols, val and or size requested, size ok, firsts ok, then true' do
@@ -112,6 +116,10 @@ describe 'PatternMatching' do
 
   #Tests para val
 
+  it '5 no es val(un_test)' do
+    expect(val(5).call(un_test)).to eq(false)
+  end
+
   it 'un_test es val(un_test)' do
     expect(val(un_test).call(un_test)).to eq(true)
   end
@@ -128,20 +136,28 @@ describe 'PatternMatching' do
     expect(val(3.509).call(3.509)).to eq(true)
   end
 
+  it 'string 3.509 no es val(3.509)' do
+    expect(val('3.509').call(3.509)).to eq(false)
+  end
+
   #Tests para and, or y not
 
   it '5 es val(5) y type(Fixnum) todo eso not da false' do
     expect(val(5).and(type(Fixnum)).not.call(5)).to eq(false)
   end
+
   it '5 es val(5) y type(Fixnum)' do
     expect(val(5).and(type(Fixnum)).call(5)).to eq(true)
   end
+
   it '5 es val(5) o type(String)' do
     expect(val(5).or(type(String)).call(5)).to eq(true)
   end
+
   it '5 no es ni val(3) ni type(String)' do
     expect(val(3).or(type(String)).call(5)).to eq(false)
   end
+
   it 'Hola es val Hola y String o Fixnum' do
     expect(val("Hola").and(type(String)).or(type(Fixnum)).call("Hola")).to eq(true)
   end
