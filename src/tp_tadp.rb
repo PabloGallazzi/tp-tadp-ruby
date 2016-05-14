@@ -265,7 +265,10 @@ class NotCombinator
   end
 
   def bind(val, binder_map)
-    one.bind(val, binder_map)
+    call = call(val)
+    if (call)
+      one.bind(val, binder_map)
+    end
   end
 end
 
