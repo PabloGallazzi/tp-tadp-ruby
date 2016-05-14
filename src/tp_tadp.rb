@@ -161,6 +161,10 @@ class DuckPattern
     end
   end
 
+  def bind_and_call(val, binder_map)
+    call(val)
+  end
+
 end
 
 class ValPattern
