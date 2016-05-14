@@ -40,25 +40,15 @@ end
 
 private
 
-module Binder
-  def bind(val, binder_map)
-  end
-
-  def bind_and_call(value, binder_map)
-    bind(value, binder_map)
-    call(value)
-  end
-end
-
 class Symbol
-  include Binder
 
   def call(val)
     true
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     binder_map[self] = val
+    true
   end
 end
 
@@ -111,7 +101,6 @@ module Combinator
 end
 
 class ListPattern
-  include Binder
   include Combinator
   attr_accessor :list, :size_bool
 
@@ -147,18 +136,18 @@ class ListPattern
     comparison
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     call = call(val)
-    if (call)
+    if call
       self.list.each_with_index { |it, index|
-        it.bind(val[index], binder_map)
+        it.bind_and_call(val[index], binder_map)
       }
     end
+    call
   end
 end
 
 class DuckPattern
-  include Binder
   include Combinator
   attr_accessor :val
 
@@ -171,10 +160,10 @@ class DuckPattern
       value.methods.include? sym
     end
   end
+
 end
 
 class ValPattern
-  include Binder
   include Combinator
   attr_accessor :val
 
@@ -185,10 +174,13 @@ class ValPattern
   def call(value)
     self.val.eql? value
   end
+
+  def bind_and_call(val, binder_map)
+    call(val)
+  end
 end
 
 class TypePattern
-  include Binder
   include Combinator
   attr_accessor :type
 
@@ -199,10 +191,13 @@ class TypePattern
   def call(type)
     type.is_a? self.type
   end
+
+  def bind_and_call(val, binder_map)
+    call(val)
+  end
 end
 
 class AndCombinator
-  include Binder
   include Combinator
   attr_accessor :one, :another
 
@@ -215,17 +210,17 @@ class AndCombinator
     one.call(val) && another.call(val)
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     call = call(val)
-    if (call)
-      one.bind(val, binder_map)
-      another.bind(val, binder_map)
+    if call
+      one.bind_and_call(val, binder_map)
+      another.bind_and_call(val, binder_map)
     end
+    call
   end
 end
 
 class OrCombinator
-  include Binder
   include Combinator
   attr_accessor :one, :another
 
@@ -238,21 +233,22 @@ class OrCombinator
     one.call(val) || another.call(val)
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     call_one = one.call(val)
-    if (call_one)
-      one.bind(val, binder_map)
-      return
+    if call_one
+      one.bind_and_call(val, binder_map)
+      return call_one
     end
     call_another = another.call(val)
-    if (call_another)
-      another.bind(val, binder_map)
+    if call_another
+      another.bind_and_call(val, binder_map)
+      return call_another
     end
+    false
   end
 end
 
 class NotCombinator
-  include Binder
   include Combinator
   attr_accessor :one
 
@@ -264,11 +260,12 @@ class NotCombinator
     !one.call(val)
   end
 
-  def bind(val, binder_map)
+  def bind_and_call(val, binder_map)
     call = call(val)
-    if (call)
-      one.bind(val, binder_map)
+    if call
+      one.bind_and_call(val, binder_map)
     end
+    call
   end
 end
 
