@@ -220,6 +220,23 @@ describe 'PatternMatching' do
 
   #Tests para binding
 
+  it 'matcher with binding list no otherwise' do
+    matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
+      with(list([type(Fixnum).and(:a)], false)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+    end
+    expect(matcherFor).to eq(false)
+  end
+
+  it 'matcher with binding list for otherwise' do
+    matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
+      with(list([type(Fixnum).and(:a)], false)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      otherwise { puts 'Tiene que salir por acá!' }
+    end
+    expect(matcherFor).to eq(true)
+  end
+
   it 'matcher with binding list' do
     matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
       with(list([type(String).and(:a).or(:b)], false)) { puts a }
