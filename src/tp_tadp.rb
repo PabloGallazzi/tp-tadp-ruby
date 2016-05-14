@@ -242,6 +242,7 @@ class OrCombinator
     call_one = one.call(val)
     if (call_one)
       one.bind(val, binder_map)
+      return
     end
     call_another = another.call(val)
     if (call_another)

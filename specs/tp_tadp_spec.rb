@@ -222,7 +222,7 @@ describe 'PatternMatching' do
 
   it 'matcher with binding list' do
     matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
-      with(list([type(String).and(:a).or(:b)], false)) { puts a + b }
+      with(list([type(String).and(:a).or(:b)], false)) { puts a }
       with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
       otherwise { raise 'No tiene que salir por acá!' }
     end
