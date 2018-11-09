@@ -32,8 +32,8 @@ describe 'PatternMatching' do
     expect(type(String).call(un_test)).to eq(false)
   end
 
-  it '5 returns true for class Fixnum' do
-    expect(type(Fixnum).call(5)).to eq(true)
+  it '5 returns true for class Integer' do
+    expect(type(Integer).call(5)).to eq(true)
   end
 
   it '5 returns true for class Numeric' do
@@ -43,7 +43,7 @@ describe 'PatternMatching' do
   #Tests para list
 
   it 'with symbols, val and or size requested, size ok, firsts ok, then true' do
-    expect(list([:a, val(2), type(Fixnum).and(val(3))], true).call([1, 2, 3])).to eq(true)
+    expect(list([:a, val(2), type(Integer).and(val(3))], true).call([1, 2, 3])).to eq(true)
   end
 
   it 'strings size requested, size ok, firsts ok, then true' do
@@ -142,12 +142,12 @@ describe 'PatternMatching' do
 
   #Tests para and, or y not
 
-  it '5 es val(5) y type(Fixnum) todo eso not da false' do
-    expect(val(5).and(type(Fixnum)).not.call(5)).to eq(false)
+  it '5 es val(5) y type(Integer) todo eso not da false' do
+    expect(val(5).and(type(Integer)).not.call(5)).to eq(false)
   end
 
-  it '5 es val(5) y type(Fixnum)' do
-    expect(val(5).and(type(Fixnum)).call(5)).to eq(true)
+  it '5 es val(5) y type(Integer)' do
+    expect(val(5).and(type(Integer)).call(5)).to eq(true)
   end
 
   it '5 es val(5) o type(String)' do
@@ -158,8 +158,8 @@ describe 'PatternMatching' do
     expect(val(3).or(type(String)).call(5)).to eq(false)
   end
 
-  it 'Hola es val Hola y String o Fixnum' do
-    expect(val("Hola").and(type(String)).or(type(Fixnum)).call("Hola")).to eq(true)
+  it 'Hola es val Hola y String o Integer' do
+    expect(val("Hola").and(type(String)).or(type(Integer)).call("Hola")).to eq(true)
   end
 
   it '5 es ni val(5) pero no un type(String)' do
@@ -171,7 +171,7 @@ describe 'PatternMatching' do
   it 'matches no one' do
     matcherFor = matches (5) do
       with(val(5), type(String)) { raise 'No tiene que salir por acá!' }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(false)
   end
@@ -179,7 +179,7 @@ describe 'PatternMatching' do
   it 'matcher for otherwise as in the example' do
     matcherFor1 = matches (5) do
       with(val(5), type(String)) { raise 'No tiene que salir por acá!' }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { puts 'Tiene que salir por acá!' }
     end
     expect(matcherFor1).to eq(true)
@@ -187,8 +187,8 @@ describe 'PatternMatching' do
 
   it 'matcher as in the example' do
     matcherFor2 = matches (5) do
-      with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }
-      with(val(5), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val(5), type(Integer)) { puts 'Tiene que salir por acá!' }
+      with(val(5), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor2).to eq(true)
@@ -196,10 +196,10 @@ describe 'PatternMatching' do
 
   it 'matcher witch do' do
     matcherFor3 = matches (5) do
-      with(val(5), type(Fixnum)) do
+      with(val(5), type(Integer)) do
         puts 'Tiene que salir por acá!'
       end
-      with(val(5), type(Fixnum)) do
+      with(val(5), type(Integer)) do
         raise 'No tiene que salir por acá!'
       end
       otherwise do
@@ -211,8 +211,8 @@ describe 'PatternMatching' do
 
   it 'matcher witch {' do
     matcher = matches (5) {
-      with(val(5), type(Fixnum)) { puts 'Tiene que salir por acá!' }
-      with(val(5), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val(5), type(Integer)) { puts 'Tiene que salir por acá!' }
+      with(val(5), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { raise 'No tiene que salir por acá!' }
     }
     expect(matcher).to eq(true)
@@ -222,16 +222,16 @@ describe 'PatternMatching' do
 
   it 'matcher with binding list no otherwise' do
     matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
-      with(list([type(Fixnum).and(:a)], false)) { raise 'No tiene que salir por acá!' }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(list([type(Integer).and(:a)], false)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(false)
   end
 
   it 'matcher with binding list for otherwise' do
     matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
-      with(list([type(Fixnum).and(:a)], false)) { raise 'No tiene que salir por acá!' }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(list([type(Integer).and(:a)], false)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { puts 'Tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(true)
@@ -240,7 +240,7 @@ describe 'PatternMatching' do
   it 'matcher with binding list' do
     matcherFor = matches (['Hola! yo me tengo que imprimir...']) do
       with(list([type(String).and(:a).or(:b)], false)) { puts a }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(true)
@@ -249,7 +249,7 @@ describe 'PatternMatching' do
   it 'matcher with binding' do
     matcherFor = matches ('Hola! yo me tengo que imprimir...') do
       with(val('Hola! yo me tengo que imprimir...'), type(String), :a) { puts a }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(true)
@@ -257,7 +257,7 @@ describe 'PatternMatching' do
 
   it 'matcher with binding only to the left b does not bind' do
     matcherFor = matches ('Hola! yo me tengo que imprimir...') do
-      with(val('Hola! yo me tengo que imprimir...'), type(String).and(val('Hola! yo me tengo que imprimir...')).or(type(Fixnum).and(:b)).and(type(String)), :a) {
+      with(val('Hola! yo me tengo que imprimir...'), type(String).and(val('Hola! yo me tengo que imprimir...')).or(type(Integer).and(:b)).and(type(String)), :a) {
         final_string = ''
         begin
           b
@@ -269,7 +269,7 @@ describe 'PatternMatching' do
         end
         puts final_string
       }
-      with(val('6'), type(Fixnum)) { raise 'No tiene que salir por acá!' }
+      with(val('6'), type(Integer)) { raise 'No tiene que salir por acá!' }
       otherwise { raise 'No tiene que salir por acá!' }
     end
     expect(matcherFor).to eq(true)
